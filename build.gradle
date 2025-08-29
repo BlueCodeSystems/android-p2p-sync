@@ -42,7 +42,7 @@ ext {
     version = VERSION_NAME
 
     androidBuildToolsVersion = "34.0.0"
-    androidMinSdkVersion = 18
+    androidMinSdkVersion = 21
     androidCompileSdkVersion = 34
     androidTargetSdkVersion = 34
 }
