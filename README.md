@@ -37,7 +37,7 @@ dependencies {
 
     ...
 
-     implementation 'org.smartregister:android-p2p-sync:0.3.7-SNAPSHOT'
+     implementation 'io.github.bluecodesystems:android-p2p-sync:0.4.1'
 }
 ```
 
@@ -122,3 +122,13 @@ To enable this text, override the `processing_disclaimer` string resource in you
 ## 2. More Information
 
 You can get more general information about the library [here](https://smartregister.atlassian.net/wiki/spaces/Documentation/pages/1139212418/Android+Peer-to-peer+sync+library?atlOrigin=eyJpIjoiYWE5NmM1ZTk3MGQ2NGU4OWE0ZTdmM2U2YTFjODg2YTAiLCJwIjoiYyJ9)
+
+## Publishing (Maven Central)
+
+- Prerequisites: install `gpg` and have your key in your local keyring; set `sonatypeUsername`/`sonatypePassword` in `~/.gradle/gradle.properties`. Optionally set `signing.gnupg.keyName=<keyId>` if not using the default key.
+- The build uses Gradle Signing with the GPG command (`gpgcmd`). Artifacts are signed automatically on publish.
+- Common commands:
+  - Build + publish to local for verification: `./gradlew :p2p-sync:publishToMavenLocal`
+  - Prepare zipped artifacts for manual upload: `./gradlew zipMavenCentralUpload`
+  - Prepare full repository-style bundle zip: `./gradlew zipMavenCentralBundle`
+  - Publish to Sonatype (staging/snapshots): `./gradlew publish` (release vs snapshot decided by `VERSION_NAME`).

@@ -11,3 +11,6 @@
 
 .idea
 **/jacoco.exec
+android-p2p-sync-*.zip
+maven-central-bundle/
+maven-central-upload/

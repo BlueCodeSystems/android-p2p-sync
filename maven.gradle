@@ -77,7 +77,16 @@ afterEvaluate { project ->
     }
     
     signing {
-        required { isReleaseBuild() && gradle.taskGraph.hasTask("publish") }
+        // Use the local GnuPG command for signing (gpgcmd)
+        useGpgCmd()
+        // Sign on release builds when publishing to Sonatype or to Maven Local
+        required {
+            isReleaseBuild() && (
+                gradle.taskGraph.hasTask(":publish") ||
+                gradle.taskGraph.hasTask(":publishToMavenLocal") ||
+                gradle.taskGraph.allTasks.any { it.name.toLowerCase().contains('publish') }
+            )
+        }
         sign publishing.publications.maven
     }
     

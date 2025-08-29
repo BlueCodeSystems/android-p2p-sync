@@ -26,3 +26,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Migration Notes
 - Projects using this library will need to migrate to AndroidX if not already done
 - Minimum Android API level is now 21 (Android 5.0)
+
+## [0.4.1] - 2025-08-29
+
+### Changed
+- Gradle signing: enable `useGpgCmd()` and sign on `publish` and `publishToMavenLocal` for release builds
+- Documentation: add Maven Central publishing instructions in README
+
+### Removed
+- Legacy root `build.gradle` file no longer used by the current build setup
+
+### Notes
+- No functional library code changes; this is a build/doc maintenance release
