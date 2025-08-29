@@ -16,7 +16,7 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
-import org.smartregister.p2p.R;
+import io.github.bluecodesystems.p2p.R;
 
 import timber.log.Timber;
 

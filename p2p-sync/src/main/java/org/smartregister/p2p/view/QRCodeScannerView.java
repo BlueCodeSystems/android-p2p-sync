@@ -25,7 +25,7 @@ import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 
-import org.smartregister.p2p.R;
+import io.github.bluecodesystems.p2p.R;
 import org.smartregister.p2p.util.Constants;
 
 import java.io.IOException;

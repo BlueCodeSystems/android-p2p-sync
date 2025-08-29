@@ -224,7 +224,7 @@ public class SyncSenderHandlerTest {
                 .sendNextPayload();
 
         assertFalse((boolean) ReflectionHelpers.getField(syncSenderHandler, "awaitingManifestTransfer"));
-        assertEquals(0l, ReflectionHelpers.getField(syncSenderHandler, "awaitingManifestId"));
+        assertEquals(0L, ReflectionHelpers.getField(syncSenderHandler, "awaitingManifestId"));
         assertNull(ReflectionHelpers.getField(syncSenderHandler, "payloadRetry"));
     }
 

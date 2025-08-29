@@ -9,7 +9,7 @@ import android.view.SurfaceView;
 import android.view.ViewGroup;
 
 import com.google.android.gms.vision.CameraSource;
-import org.smartregister.p2p.R;
+import io.github.bluecodesystems.p2p.R;
 import java.io.IOException;
 
 import timber.log.Timber;

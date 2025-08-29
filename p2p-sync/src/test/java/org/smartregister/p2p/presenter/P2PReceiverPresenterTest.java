@@ -26,7 +26,7 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.util.ReflectionHelpers;
 import org.smartregister.p2p.P2PLibrary;
-import org.smartregister.p2p.R;
+import io.github.bluecodesystems.p2p.R;
 import org.smartregister.p2p.authorizer.P2PAuthorizationService;
 import org.smartregister.p2p.contract.P2pModeSelectContract;
 import org.smartregister.p2p.dialog.SkipQRScanDialog;

@@ -18,7 +18,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import org.smartregister.p2p.P2PLibrary;
-import org.smartregister.p2p.R;
+import io.github.bluecodesystems.p2p.R;
 import org.smartregister.p2p.authenticator.BaseSyncConnectionAuthenticator;
 import org.smartregister.p2p.authenticator.SenderConnectionAuthenticator;
 import org.smartregister.p2p.authorizer.P2PAuthorizationService;

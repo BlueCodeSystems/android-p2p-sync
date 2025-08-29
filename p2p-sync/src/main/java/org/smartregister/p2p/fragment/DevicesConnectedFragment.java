@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import org.smartregister.p2p.R;
+import io.github.bluecodesystems.p2p.R;
 import org.smartregister.p2p.contract.P2pModeSelectContract;
 
 /**

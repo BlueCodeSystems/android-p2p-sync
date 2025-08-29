@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
-import org.smartregister.p2p.R;
+import io.github.bluecodesystems.p2p.R;
 import org.smartregister.p2p.contract.P2pModeSelectContract;
 
 import java.util.ArrayList;

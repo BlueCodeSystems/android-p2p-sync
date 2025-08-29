@@ -7,7 +7,7 @@ import android.util.SparseArray;
 import com.google.android.gms.nearby.connection.ConnectionInfo;
 import com.google.android.gms.vision.barcode.Barcode;
 
-import org.smartregister.p2p.R;
+import io.github.bluecodesystems.p2p.R;
 import org.smartregister.p2p.contract.P2pModeSelectContract;
 import org.smartregister.p2p.fragment.QRCodeScanningFragment;
 import org.smartregister.p2p.sync.DiscoveredDevice;

@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.smartregister.p2p.R;
+import io.github.bluecodesystems.p2p.R;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 03/05/2019

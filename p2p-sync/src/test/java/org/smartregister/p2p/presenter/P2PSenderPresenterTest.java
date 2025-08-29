@@ -29,7 +29,7 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.util.ReflectionHelpers;
 import org.smartregister.p2p.P2PLibrary;
-import org.smartregister.p2p.R;
+import io.github.bluecodesystems.p2p.R;
 import org.smartregister.p2p.authorizer.P2PAuthorizationService;
 import org.smartregister.p2p.callback.OnResultCallback;
 import org.smartregister.p2p.contract.P2pModeSelectContract;
@@ -827,7 +827,7 @@ public class P2PSenderPresenterTest {
         ReflectionHelpers.setField(p2PSenderPresenter, "hashKeyPayloadId", payloadId);
         p2PSenderPresenter.onPayloadTransferUpdate(endpointId, update);
 
-        assertEquals(0l, ReflectionHelpers.getField(p2PSenderPresenter, "hashKeyPayloadId"));
+        assertEquals(0L, ReflectionHelpers.getField(p2PSenderPresenter, "hashKeyPayloadId"));
     }
 
     @Test
@@ -922,7 +922,7 @@ public class P2PSenderPresenterTest {
 
     @Test
     public void sendManifestShouldCallSendMessageWhenCurrentPeerDeviceIsNotNull() {
-        SyncPackageManifest syncPackageManifest = new SyncPackageManifest(89l, ".json", new DataType("somedata", DataType.Type.NON_MEDIA, 1), 1);
+        SyncPackageManifest syncPackageManifest = new SyncPackageManifest(89L, ".json", new DataType("somedata", DataType.Type.NON_MEDIA, 1), 1);
         p2PSenderPresenter.setCurrentDevice(Mockito.mock(DiscoveredDevice.class));
         p2PSenderPresenter.sendManifest(syncPackageManifest);
 

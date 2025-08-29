@@ -13,7 +13,7 @@ import com.google.gson.JsonParseException;
 
 import org.json.JSONArray;
 import org.smartregister.p2p.P2PLibrary;
-import org.smartregister.p2p.R;
+import io.github.bluecodesystems.p2p.R;
 import org.smartregister.p2p.callback.SyncFinishedCallback;
 import org.smartregister.p2p.contract.P2pModeSelectContract;
 import org.smartregister.p2p.fragment.SyncCompleteTransferFragment;

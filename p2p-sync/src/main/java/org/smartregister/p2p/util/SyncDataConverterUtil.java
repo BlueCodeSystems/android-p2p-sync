@@ -4,7 +4,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.smartregister.p2p.R;
+import io.github.bluecodesystems.p2p.R;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;

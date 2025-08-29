@@ -10,7 +10,7 @@ import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.widget.TextView;
 
-import org.smartregister.p2p.R;
+import io.github.bluecodesystems.p2p.R;
 import org.smartregister.p2p.util.Constants;
 
 /**

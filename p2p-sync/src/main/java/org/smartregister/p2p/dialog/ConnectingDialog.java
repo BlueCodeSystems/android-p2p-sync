@@ -9,7 +9,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 
-import org.smartregister.p2p.R;
+import io.github.bluecodesystems.p2p.R;
 import org.smartregister.p2p.contract.P2pModeSelectContract;
 
 /**

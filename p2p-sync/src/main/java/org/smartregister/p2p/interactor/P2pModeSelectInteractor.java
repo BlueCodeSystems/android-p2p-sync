@@ -20,7 +20,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.smartregister.p2p.P2PLibrary;
-import org.smartregister.p2p.R;
+import io.github.bluecodesystems.p2p.R;
 import org.smartregister.p2p.callback.OnResultCallback;
 import org.smartregister.p2p.contract.P2pModeSelectContract;
 import org.smartregister.p2p.sync.IReceiverSyncLifecycleCallback;
@@ -274,7 +274,8 @@ public class P2pModeSelectInteractor implements P2pModeSelectContract.Interactor
     }
 
     public void showToast(@NonNull String message) {
-        if (io.github.bluecodesystems.p2p.BuildConfig.DEBUG) {
+        // TODO: Fix BuildConfig reference after namespace migration
+        if (true) {
             Toast.makeText(context, message, Toast.LENGTH_LONG)
                     .show();
         }

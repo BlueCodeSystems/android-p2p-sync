@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.smartregister.p2p.R;
+import io.github.bluecodesystems.p2p.R;
 
 /**
  * Created by Ephraim Kigamba - ekigamba@ona.io on 10/06/2019
