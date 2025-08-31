@@ -47,3 +47,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Notes
 - Backward compatible; no API or behavior changes.
+
+## [0.4.3] - 2025-08-31
+
+### Fixed
+- AAPT2 verifyReleaseResources failure caused by an unresolved placeholder in a transitive SQLCipher resource.
+- Build stability by limiting packaged locales to English in the library to avoid merging problematic localized resources.
+
+### Dependencies
+- Bump SQLCipher to `net.zetetic:android-database-sqlcipher:4.5.4`.
+- Bump Saferoom to `com.commonsware.cwac:saferoom.x:1.3.0` and exclude transitive old SQLCipher.
+
+### Removed
+- Temporarily remove French locale resources from the library module while strings are corrected. This has no API impact; localized strings can be reintroduced in a future release once verified.
