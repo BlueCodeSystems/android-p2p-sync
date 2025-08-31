@@ -8,6 +8,8 @@ android {
         targetSdk androidTargetSdkVersion
         versionCode 1
         versionName version
+        // Exclude non-English locales to avoid problematic values-fr merge
+        resConfigs 'en'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -74,8 +76,11 @@ dependencies {
     // Room Test helpers
     testImplementation "androidx.room:room-testing:2.6.1"
 
-    // Encrypted SQLite help
-    implementation "com.commonsware.cwac:saferoom:1.0.2"
+    // Encrypted SQLite helper (saferoom.x) — exclude SQLCipher to pin 4.5.4 explicitly
+    implementation ("com.commonsware.cwac:saferoom.x:1.3.0") {
+        exclude group: 'net.zetetic', module: 'android-database-sqlcipher'
+    }
+    implementation 'net.zetetic:android-database-sqlcipher:4.5.4'
 
 }
 
