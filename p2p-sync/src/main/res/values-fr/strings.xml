@@ -6,7 +6,7 @@
     <string name="location_service_disabled">Service de localisations désactivée</string>
     <string name="file_data_sharing_will_not_work_without_location"><![CDATA[Le système de partage de donées et de fichiers ne fonctionnera sans localisation. Pour changer ce paramètre aller à Paramètres > Localisation]]></string>
     <string name="searching_for_device_to_connect_to">En recherche de l'apareil(recipient) pour envoyer donées à&#8230;</string>
-    <string name="qr_code_scanning_dialog_message">Scanner le code QR sur l'appareil mobile récepteur, "%1$s", pour confirmer le bon appareil mobile</string>
+    <string name="qr_code_scanning_dialog_message">Scanner le code QR sur l'appareil mobile récepteur, &quot;%1$s&quot;, pour confirmer le bon appareil mobile</string>
     <string name="you_are_connected_to_receiver">Vous êtes maintenant connecté au récepteur %1$s</string>
     <string name="you_are_connected_to_sender">Vous êtes maintenant connectés à l'expéditeur %1$s</string>
     <string name="receiver_rejected_the_connection">Le récepteur à rejeté la connection</string>
@@ -47,7 +47,7 @@
     <string name="log_could_not_show_google_play_services_resolution_dialog">Impossible d'afficher le dialogue de resolution de la service Google Play puisque ceci n'a pas été appelé d'une activité</string>
     <string name="could_not_start_camera_source">Impossible de démarrer la source de la caméra</string>
     <string name="no_permission_to_start_the_camera">Permission non acquis pour démarrer la caméra</string>
-    <string name="scan_this_qr_code_using_sending_device">Scanner le code QR en utilisant l'appareil émetteur, "%1$s", pour confirmer l'appareil récepteur</string>
+    <string name="scan_this_qr_code_using_sending_device">Scanner le code QR en utilisant l'appareil émetteur, &quot;%1$s&quot;, pour confirmer l'appareil récepteur</string>
     <string name="authentication_failed">Authentification échouée</string>
     <string name="authentication_cancelled_with_reason">Authentification annulé : %1$s</string>
     <string name="an_error_occured">Une erreur est survenue!</string>
@@ -92,7 +92,7 @@
     <string name="sending_progress_text">Transfer de %1$,d dossiers</string>
     <string name="connection_lost">Connexion echouée</string>
     <string name="skip">SAUTER</string>
-    <string name="connection_lost_transfer_summary">Veuillez vous assurer que l'appareil de "%1$s" est allumé et à proximité. %2$s fichiers ont été transférés. Veuillez vous reconnecter pour transférer les données restantes.</string>
+    <string name="connection_lost_transfer_summary">Veuillez vous assurer que l'appareil de &quot;%1$s&quot; est allumé et à proximité. %2$s fichiers ont été transférés. Veuillez vous reconnecter pour transférer les données restantes.</string>
     <string name="skip_qr_scan">Sauter le scan du code QR </string>
     <string name="skip_qr_scan_instructions_sender">L'appareil récepteur, «l'appareil de%1$s», à choisi de sauter le scan du code QR. Si vous choisissez de sauter cette étape vous allez pouvoir envoyer les données à l'autre appareil sans confirmation par scan du code QR. </string>
     <string name="skip_qr_scan_instructions_receiver">L'appareil émetteur, «l'appareil de %1$s», à choisi de sauter le scan du code QR. Si vous choisissez de sauter cette étape vous allez pouvoir envoyer les données à l'autre appareil sans confirmation par scan du code QR. </string>
