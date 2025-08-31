@@ -38,3 +38,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Notes
 - No functional library code changes; this is a build/doc maintenance release
+
+## [0.4.2] - 2025-08-31
+
+### Fixed
+- Enforce positional placeholders in all multi-argument Android string resources to prevent locale reordering issues.
+- Correct a malformed placeholder in French resources ("1%s" -> "%1$s").
+
+### Notes
+- Backward compatible; no API or behavior changes.

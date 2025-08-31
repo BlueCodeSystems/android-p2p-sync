@@ -2,13 +2,10 @@ apply plugin: 'com.android.library'
 
 android {
     namespace 'io.github.bluecodesystems.p2p'
-    compileSdkVersion androidCompileSdkVersion
-    buildToolsVersion androidBuildToolsVersion
-
-
+    compileSdk androidCompileSdkVersion
     defaultConfig {
-        minSdkVersion androidMinSdkVersion
-        targetSdkVersion androidTargetSdkVersion
+        minSdk androidMinSdkVersion
+        targetSdk androidTargetSdkVersion
         versionCode 1
         versionName version
 

@@ -1,0 +1,31 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:8.5.2"
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.30.0"
+    }
+}
+
+// Set group, version, and repositories for all modules
+allprojects {
+    group = GROUP
+    version = VERSION_NAME
+    repositories {
+        google()
+        mavenCentral()
+        maven { url "https://s3.amazonaws.com/repo.commonsware.com" }
+    }
+}
+
+// SDK version constants consumed by modules
+ext {
+    androidCompileSdkVersion = 34
+    androidMinSdkVersion = 21
+    androidTargetSdkVersion = 34
+}
+
+// Apply Nexus Staging plugin to enable `nexusStaging {}` in publishing config
+apply plugin: "io.codearte.nexus-staging"

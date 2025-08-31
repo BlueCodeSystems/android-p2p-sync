@@ -28,21 +28,35 @@ afterEvaluate { project ->
         publications {
             maven(MavenPublication) {
                 from components.release
-                
+
                 artifactId = POM_SETTING_ARTIFACT_ID
-                
+
+                // Optionally prune SNAPSHOT dependencies when preparing a Central release bundle
+                if ((project.findProperty('centralRelease')?.toString()?.toBoolean()) == true) {
+                    pom.withXml {
+                        def n = asNode()
+                        def deps = n.get('dependencies')?.getAt(0)
+                        if (deps) {
+                            deps.children().removeAll { d ->
+                                def ver = d.version?.text()
+                                ver?.endsWith('SNAPSHOT')
+                            }
+                        }
+                    }
+                }
+
                 pom {
                     name = POM_SETTING_NAME
                     packaging = POM_SETTING_PACKAGING
                     description = POM_SETTING_DESCRIPTION
                     url = POM_SETTING_URL
-                    
+
                     scm {
                         url = POM_SETTING_SCM_URL
                         connection = POM_SETTING_SCM_CONNECTION
                         developerConnection = POM_SETTING_SCM_DEV_CONNECTION
                     }
-                    
+
                     licenses {
                         license {
                             name = POM_SETTING_LICENCE_NAME
@@ -50,7 +64,7 @@ afterEvaluate { project ->
                             distribution = POM_SETTING_LICENCE_DIST
                         }
                     }
-                    
+
                     developers {
                         developer {
                             id = POM_SETTING_DEVELOPER_ID
@@ -60,33 +74,53 @@ afterEvaluate { project ->
                 }
             }
         }
-        
+
         repositories {
             maven {
                 def sonatypeRepositoryURL = isReleaseBuild() ?
                     "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/" :
                     "https://s01.oss.sonatype.org/content/repositories/snapshots/"
-                
+
                 url = sonatypeRepositoryURL
                 credentials {
                     username = getRepositoryUsername()
                     password = getRepositoryPassword()
                 }
             }
+            // Optional local Central-like file repo for portal uploads
+            if ((project.findProperty('centralBundle')?.toString()?.toBoolean()) == true) {
+                maven {
+                    name = "CentralBundle"
+                    url = layout.buildDirectory.dir("central-bundle")
+                }
+            }
         }
     }
     
     signing {
-        // Use the local GnuPG command for signing (gpgcmd)
-        useGpgCmd()
-        // Sign on release builds when publishing to Sonatype or to Maven Local
+        // Flexible signing similar to native-forms
+        def taskNames = gradle.startParameter.taskNames
+        def isMavenLocal = taskNames.any { it.contains('publishToMavenLocal') }
+        def skipSigning = project.findProperty('skipSigning')?.toString()?.toBoolean() ?: false
+        def useCmd = project.findProperty('useGpgCmd')?.toString()?.toBoolean() ?: false
+
         required {
-            isReleaseBuild() && (
-                gradle.taskGraph.hasTask(":publish") ||
-                gradle.taskGraph.hasTask(":publishToMavenLocal") ||
-                gradle.taskGraph.allTasks.any { it.name.toLowerCase().contains('publish') }
+            isReleaseBuild() && !isMavenLocal && !skipSigning && (
+                project.findProperty('signing.keyId') ||
+                project.findProperty('signingKey') ||
+                useCmd
             )
         }
+
+        if (useCmd) {
+            useGpgCmd()
+        }
+        def inMemKey = project.findProperty('signingKey')
+        def inMemPass = project.findProperty('signingPassword')
+        if (inMemKey && inMemPass) {
+            useInMemoryPgpKeys(inMemKey.toString(), inMemPass.toString())
+        }
+
         sign publishing.publications.maven
     }
     
@@ -94,5 +128,168 @@ afterEvaluate { project ->
         serverUrl = "https://s01.oss.sonatype.org/service/local/"
         username = getRepositoryUsername()
         password = getRepositoryPassword()
+    }
+
+    // Package release artifacts into a distributable zip for this module
+    def artifactId = project.hasProperty('POM_SETTING_ARTIFACT_ID') ? POM_SETTING_ARTIFACT_ID : project.name
+    def releaseAarDir = file("${project.buildDir}/outputs/aar")
+    def libsDir = file("${project.buildDir}/libs")
+    def publicationsDir = file("${project.buildDir}/publications/maven")
+
+    // Generate MD5 and SHA1 checksum sidecar files for artifacts in Maven Local
+    tasks.register("generateM2Checksums") {
+        group = "distribution"
+        description = "Generates .md5 and .sha1 for artifacts in local Maven repo"
+
+        // Ensure artifacts (incl. .asc signatures) exist in m2 via publishing locally
+        dependsOn 'publishToMavenLocal'
+
+        doLast {
+            def groupId = project.hasProperty('GROUP') ? GROUP.toString() : project.group.toString()
+            def versionName = project.hasProperty('VERSION_NAME') ? VERSION_NAME.toString() : project.version.toString()
+            def groupPath = groupId.replace('.', '/')
+            def m2Dir = file("${System.getProperty('user.home')}/.m2/repository/${groupPath}/${artifactId}/${versionName}")
+
+            if (!m2Dir.exists()) {
+                throw new GradleException("Maven Local path not found: ${m2Dir}")
+            }
+
+            logger.lifecycle("Generating checksums in ${m2Dir}")
+
+            // Compute MD5 and SHA1 for all files except existing checksum/signature files
+            ant.checksum(algorithm: 'MD5', fileext: '.md5') {
+                fileset(dir: m2Dir) {
+                    include(name: '*')
+                    exclude(name: '*.md5')
+                    exclude(name: '*.sha1')
+                }
+            }
+            ant.checksum(algorithm: 'SHA-1', fileext: '.sha1') {
+                fileset(dir: m2Dir) {
+                    include(name: '*')
+                    exclude(name: '*.md5')
+                    exclude(name: '*.sha1')
+                }
+            }
+        }
+    }
+
+    tasks.register("packageReleaseZip", Zip) {
+        group = "distribution"
+        description = "Builds, signs via publishToMavenLocal, generates checksums, and zips release artifacts with correct Maven Central layout"
+
+        // Ensure artifacts exist
+        dependsOn 'assembleRelease'
+        // Trigger signing by publishing to local (signing plugin attaches .asc)
+        dependsOn 'generateM2Checksums'
+
+        destinationDirectory = file("${project.buildDir}/releasePackage")
+        archiveBaseName = artifactId
+        archiveVersion = (project.hasProperty('VERSION_NAME') ? VERSION_NAME : project.version.toString())
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+        // Provide baseline inputs so task is not skipped as NO-SOURCE
+        from(releaseAarDir) { include('*-release.aar') }
+        from(libsDir) { include('*-sources.jar', '*-javadoc.jar') }
+
+        // Also include signed artifacts from Maven Local using lazy providers (configured at configuration time)
+        def groupIdProvider = providers.provider { project.hasProperty('GROUP') ? GROUP.toString() : project.group.toString() }
+        def versionNameProvider = providers.provider { project.hasProperty('VERSION_NAME') ? VERSION_NAME.toString() : project.version.toString() }
+        def groupPathProvider = providers.provider { groupIdProvider.get().replace('.', '/') }
+        def m2DirProvider = providers.provider {
+            def groupPath = groupIdProvider.get().replace('.', '/')
+            file("${System.getProperty('user.home')}/.m2/repository/${groupPath}/${artifactId}/${versionNameProvider.get()}")
+        }
+        from(m2DirProvider) {
+            include('*')
+            // Place files into the canonical Maven repository path within the zip
+            into("${groupPathProvider.get()}/${artifactId}/${versionNameProvider.get()}")
+        }
+
+        doLast {
+            logger.lifecycle("Packaging from Maven Local: ${m2DirProvider.get()}")
+            logger.lifecycle("Release package created: ${archiveFile.get().asFile.absolutePath}")
+        }
+    }
+
+    // Optional: copy the exact repository layout into project dir for manual Central upload
+    tasks.register("prepareCentralBundle", Copy) {
+        group = "distribution"
+        description = "Copies artifacts + signatures + checksums into maven-central-bundle/<group>/<artifact>/<version>"
+        dependsOn 'generateM2Checksums'
+
+        def groupIdProvider = providers.provider { project.hasProperty('GROUP') ? GROUP.toString() : project.group.toString() }
+        def versionNameProvider = providers.provider { project.hasProperty('VERSION_NAME') ? VERSION_NAME.toString() : project.version.toString() }
+        def groupPathProvider = providers.provider { groupIdProvider.get().replace('.', '/') }
+        def m2DirProvider = providers.provider {
+            def groupPath = groupIdProvider.get().replace('.', '/')
+            file("${System.getProperty('user.home')}/.m2/repository/${groupPath}/${artifactId}/${versionNameProvider.get()}")
+        }
+
+        from(m2DirProvider)
+        into("${project.rootProject.projectDir}/maven-central-bundle/${groupPathProvider.get()}/${artifactId}/${versionNameProvider.get()}")
+
+        doLast {
+            logger.lifecycle("Central bundle prepared at: ${destinationDir}")
+        }
+    }
+
+    // ---- Local Central bundle (file-based repository) helpers ----
+    tasks.register("generateCentralBundleChecksums") {
+        group = "distribution"
+        description = "Generates .md5 and .sha1 in build/central-bundle for Central portal validators"
+        dependsOn tasks.matching { it.name == 'publishMavenPublicationToCentralBundleRepository' }
+        doLast {
+            def repoDir = layout.buildDirectory.dir("central-bundle").get().asFile
+            if (!repoDir.exists()) return
+            repoDir.eachFileRecurse { f ->
+                if (f.isFile() && !(f.name.endsWith('.md5') || f.name.endsWith('.sha1') || f.name.endsWith('.asc'))) {
+                    def md5 = java.security.MessageDigest.getInstance('MD5')
+                    def sha1 = java.security.MessageDigest.getInstance('SHA-1')
+                    f.withInputStream { is ->
+                        byte[] buf = new byte[8192]
+                        int r
+                        while ((r = is.read(buf)) > 0) {
+                            md5.update(buf, 0, r)
+                            sha1.update(buf, 0, r)
+                        }
+                    }
+                    def toHex = { bytes -> bytes.collect { String.format('%02x', it) }.join() }
+                    new File(f.parentFile, f.name + '.md5').text = toHex(md5.digest())
+                    new File(f.parentFile, f.name + '.sha1').text = toHex(sha1.digest())
+                }
+            }
+        }
+    }
+
+    tasks.register("zipCentralBundle", Zip) {
+        group = "distribution"
+        description = "Zips build/central-bundle/<group>/<artifact>/<version> for upload in Central UI"
+        dependsOn tasks.matching { it.name == 'publishMavenPublicationToCentralBundleRepository' }
+        dependsOn 'generateCentralBundleChecksums'
+
+        def groupPath = (project.hasProperty('GROUP') ? GROUP.toString() : project.group.toString()).replace('.', '/')
+        def versionName = project.hasProperty('VERSION_NAME') ? VERSION_NAME.toString() : project.version.toString()
+
+        from(layout.buildDirectory.dir("central-bundle")) {
+            include "${groupPath}/${artifactId}/${versionName}/**"
+        }
+        destinationDirectory = layout.buildDirectory.dir("distributions")
+        archiveBaseName.set("central-bundle-${artifactId}")
+        archiveVersion.set(versionName)
+    }
+
+    tasks.register("printCentralBundleLayout") {
+        group = "distribution"
+        description = "Prints the path and contents of build/central-bundle for this artifact/version"
+        dependsOn tasks.matching { it.name == 'publishMavenPublicationToCentralBundleRepository' }
+        doLast {
+            def groupPath = (project.hasProperty('GROUP') ? GROUP.toString() : project.group.toString()).replace('.', '/')
+            def versionName = project.hasProperty('VERSION_NAME') ? VERSION_NAME.toString() : project.version.toString()
+            def base = layout.buildDirectory.dir('central-bundle').get().asFile
+            def path = new File(base, "${groupPath}/${artifactId}/${versionName}")
+            println "Bundle path: ${path}"
+            if (path.exists()) path.eachFile { println it.name } else println "Bundle path not found"
+        }
     }
 }

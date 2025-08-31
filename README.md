@@ -37,7 +37,7 @@ dependencies {
 
     ...
 
-     implementation 'io.github.bluecodesystems:android-p2p-sync:0.4.1'
+     implementation 'io.github.bluecodesystems:android-p2p-sync:0.4.2'
 }
 ```
 
